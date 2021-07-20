@@ -1,0 +1,271 @@
+﻿@model GMWebApp.BAL.Models.UsermasterModel
+@{
+    ViewBag.Title = "Tender";
+
+}
+
+<div class="container">
+    @*<h2>Tender Approval Items</h2>*@
+    <div style="height:25px"></div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Tender Approval Items</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        @Html.Label("User Name")
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.UserName, new { placeholder = "Enter User Name", @class = "form-control", @disabled = "disabled" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.Label("User Email")
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.Email, new { placeholder = "Enter User Email", @class = "form-control", @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        @Html.Label("User Role")
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.Designation, new { placeholder = "Enter User Role", @class = "form-control", @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        @Html.Label("Tender No")
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.TenderNo, new { placeholder = "Enter Tender No", @class = "form-control", @disabled = "disabled" })
+                        @Html.HiddenFor(model => model.TenderNo, new { id = "hdnTenderNo" })
+                        @Html.HiddenFor(model => model.TenderID, new { id = "hdnTenderID" })
+                        @Html.HiddenFor(model => model.UserId)
+                        @Html.HiddenFor(model => model.Designation)
+                    </div>
+                    <div class="col-md-3">
+                        <input type="button" value="Approve All Pending Items" class="btn btn-primary" onclick="fnApproveAllPendingTenderItems()" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12" style="max-width: 95%;overflow-x: scroll;">
+                        <table id="tblTenderItemList" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Approved - BH</th>
+                                    <th>Approved - DH</th>
+                                    <th>Approved - IIFH</th>
+                                    <th>Approved - IF_Head</th>
+                                    <th>ProductID</th>
+                                    <th>Material Code</th>
+                                    <th>Product Name</th>
+                                    <th>Para - 19</th>
+                                    <th>Price</th>
+                                    <th>Fall Clause Price</th>
+                                    <th>Margin %</th>
+                                    <th>Stokist Margin</th>
+                                    <th>Net Realisation</th>
+                                    <th>COGS</th>
+                                    <th>Service Provider Commission</th>
+                                    <th>IPL (Y/N)</th>
+                                    <th>Royality %</th>
+                                    <th>Royality Value</th>
+                                    <th>GC</th>
+                                    <th>GC (%)</th>
+                                </tr>
+                            </thead>
+                            @if (Model.tenderItemsList != null && Model.tenderItemsList.Count > 0)
+                            {
+                                <tbody>
+                                    @foreach (var itm in Model.tenderItemsList)
+                                    {
+                                        <tr>
+                                            <td>@itm.ID</td>
+
+                                            @if (Model.Designation == "BH")
+                                            {
+                                                if (itm.Approved_BH != "Approved" && itm.Approved_BH != "NA")
+                                                {
+                                                    <td>
+                                                        <input type="button" value="@itm.Approved_BH" class="btn btn-primary btn-sm" onclick="fn_TenderItemApproveClick(@Model.UserId, '@Model.Designation', @itm.ID, '@itm.MaterialCode')" />
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_BH" disabled="disabled" /></td>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td><input type="button" value="@itm.Approved_BH" disabled="disabled" /></td>
+                                            }
+
+                                            @if (Model.Designation == "DH")
+                                            {
+                                                if (itm.Approved_DH != "Approved" && itm.Approved_DH != "NA")
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_DH" class="btn btn-primary btn-sm" onclick="fn_TenderItemApproveClick(@Model.UserId, '@Model.Designation', @itm.ID, '@itm.MaterialCode')" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_DH" disabled="disabled" /></td>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td><input type="button" value="@itm.Approved_DH" disabled="disabled" /></td>
+                                            }
+
+                                            @if (Model.Designation == "IIFH")
+                                            {
+                                                if (itm.Approved_IIFH != "Approved" && itm.Approved_IIFH != "NA")
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_IIFH" class="btn btn-primary btn-sm" onclick="fn_TenderItemApproveClick(@Model.UserId, '@Model.Designation', @itm.ID, '@itm.MaterialCode')" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_IIFH" disabled="disabled" /></td>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td><input type="button" value="@itm.Approved_IIFH" disabled="disabled" /></td>
+                                            }
+
+                                            @if (Model.Designation == "IF_Head")
+                                            {
+                                                if (itm.Approved_IF_Head != "Approved" && itm.Approved_IF_Head != "NA")
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_IF_Head" class="btn btn-primary btn-sm" onclick="fn_TenderItemApproveClick(@Model.UserId, '@Model.Designation', @itm.ID, '@itm.MaterialCode')" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="button" value="@itm.Approved_IF_Head" disabled="disabled" /></td>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td><input type="button" value="@itm.Approved_IF_Head" disabled="disabled" /></td>
+                                            }
+                                            <td>@itm.ProductId</td>
+                                            <td>@itm.MaterialCode</td>
+                                            <td>@itm.ProductName</td>
+                                            <td>@itm.Is_Para_19</td>
+                                            <td>@itm.Price</td>
+                                            <td>@itm.Fall_Clause_Price</td>
+                                            <td>@itm.Margin_Per</td>
+                                            <td>@itm.Stokist_Margin</td>
+                                            <td>@itm.Net_Realisation</td>
+                                            <td>@itm.COGS</td>
+                                            <td>@itm.Service_Provider_Commission</td>
+                                            <td>@itm.Is_IPL</td>
+                                            <td>@itm.Royalty_Percentage</td>
+                                            <td>@itm.Royalty_Value</td>
+                                            <td>@itm.GC_Value</td>
+                                            <td>@itm.GC_Percentage</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    table tr td {
+        text-align: center;
+    }
+</style>
+<script type="text/javascript">
+    //$(document).ready(function () {
+        $("#tblTenderItemList").dataTable();
+    //})
+
+
+    function fnApproveAllPendingTenderItems() {
+        var allTablerows = $("#tblTenderItemList > tbody > tr").length;
+        if (allTablerows > 0) {
+
+            var UserId = $("#UserId").val();
+            var Designation = $("#Designation").val();
+            var TenderID = $("#hdnTenderID").val();
+            var TenderNo = $("#hdnTenderNo").val();
+
+            debugger;
+               $.ajax({
+                type: "POST",
+                url: '@Url.Action("ApproveAllTenderItems")',
+                data: '{ UserId : ' + UserId + ', Designation:"' + Designation + '",TenderID : ' + TenderID + ', TenderNo : "' + TenderNo + '"}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                       //debugger;
+                    //alert(JSON.stringify(data.responseModel.Status));
+                    if (data.responseModel != undefined && data.responseModel.Status == "1") {
+                        alert(data.responseModel.StatusMessage)
+                        //debugger;
+                        //alert(JSON.stringify(location))
+                        var pathurl = location.href;
+                        location.href = pathurl;
+                    }
+                    else {
+                        alert(data.responseModel.StatusMessage)
+                        var pathurl = location.href;
+                        location.href = pathurl;
+                    }
+                },
+                error: function () {
+                    alert("Error while approving Tender Item.");
+                }
+                });
+        }
+        else {
+            alert("No pending Tender Items for approval.");
+        }
+    }
+
+    function fn_TenderItemApproveClick(UserId, Designation, tenderItemID, MaterialCode) {
+         $.ajax({
+            type: "POST",
+            url: '@Url.Action("ApproveTenderItemID")',
+            data: '{ UserId : ' + UserId + ', Designation:"'
+                + Designation + '",tenderItemID : ' + tenderItemID + ', MaterialCode : "' + MaterialCode + '"}',
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                //alert(JSON.stringify(data.responseModel.Status));
+                if (data.responseModel != undefined && data.responseModel.Status == "1") {
+                    alert(data.responseModel.StatusMessage)
+                    //debugger;
+                    //alert(JSON.stringify(location))
+                    var pathurl = location.href;
+                    location.href = pathurl;
+                }
+                else {
+                    alert(data.responseModel.StatusMessage)
+                    //var pathurl = location.href;
+                    //location.href = pathurl;
+                }
+            },
+            error: function () {
+                alert("Error while approving Tender Item.");
+            }
+        });
+    }
+</script>
