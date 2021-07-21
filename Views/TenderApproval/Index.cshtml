@@ -64,12 +64,12 @@
                         <table id="tblTenderItemList" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th hidden>ID</th>
                                     <th>Approved - BH</th>
                                     <th>Approved - DH</th>
                                     <th>Approved - IIFH</th>
                                     <th>Approved - IF_Head</th>
-                                    <th>ProductID</th>
+                                    <th hidden>ProductID</th>
                                     <th>Material Code</th>
                                     <th>Product Name</th>
                                     <th>Para - 19</th>
@@ -93,7 +93,7 @@
                                     @foreach (var itm in Model.tenderItemsList)
                                     {
                                         <tr>
-                                            <td>@itm.ID</td>
+                                            <td hidden>@itm.ID</td>
 
                                             @if (Model.Designation == "BH")
                                             {
@@ -160,7 +160,7 @@
                                             {
                                                 <td><input type="button" value="@itm.Approved_IF_Head" disabled="disabled" /></td>
                                             }
-                                            <td>@itm.ProductId</td>
+                                            <td hidden>@itm.ProductId</td>
                                             <td>@itm.MaterialCode</td>
                                             <td>@itm.ProductName</td>
                                             <td>@itm.Is_Para_19</td>
